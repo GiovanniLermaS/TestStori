@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "453750955962",
+    "project_id": "storicard-cd34e",
+    "storage_bucket": "storicard-cd34e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:453750955962:android:4a648cfc31fb222a9f0783",
+        "android_client_info": {
+          "package_name": "com.example.teststori"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5deInA_x647IHp6V42EfLqhaLkaFFzU0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
