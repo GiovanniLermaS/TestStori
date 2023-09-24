@@ -13,11 +13,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.teststori.presentation.camera.CameraScreen
 import com.example.teststori.presentation.home.HomeScreen
 import com.example.teststori.presentation.login.LoginScreen
 import com.example.teststori.presentation.registration.RegistrationScreen
 import com.example.teststori.presentation.ui.theme.TestStoriTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,9 +36,11 @@ class MainActivity : ComponentActivity() {
                         startDestination = Screen.RegistrationScreen.route
                     ) {
                         composable(
-                            route = Screen.RegistrationScreen.route
+                            route = Screen.RegistrationScreen.route,
                         ) {
-                            RegistrationScreen()
+                            RegistrationScreen(
+                                navController
+                            )
                         }
                         composable(
                             route = Screen.LoginScreen.route
@@ -46,6 +51,11 @@ class MainActivity : ComponentActivity() {
                             route = Screen.HomeScreen.route
                         ) {
                             HomeScreen()
+                        }
+                        composable(
+                            route = Screen.CameraScreen.route
+                        ) {
+                            CameraScreen(navController)
                         }
                     }
                 }
