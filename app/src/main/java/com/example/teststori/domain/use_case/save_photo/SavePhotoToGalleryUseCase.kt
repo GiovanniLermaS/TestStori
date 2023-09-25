@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import com.example.teststori.R
 import com.google.android.datatransport.runtime.dagger.Component
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -41,7 +42,7 @@ class SavePhotoToGalleryUseCase(
                 put(MediaStore.MediaColumns.DATE_TAKEN, nowTimestamp)
                 put(
                     MediaStore.MediaColumns.RELATIVE_PATH,
-                    Environment.DIRECTORY_DCIM + "/YourAppNameOrAnyOtherSubFolderName"
+                    Environment.DIRECTORY_DCIM + "/${context.getString(R.string.app_name)}"
                 )
                 put(MediaStore.MediaColumns.IS_PENDING, 1)
             }
@@ -50,8 +51,8 @@ class SavePhotoToGalleryUseCase(
                 put(MediaStore.Images.Media.DATE_TAKEN, nowTimestamp)
                 put(MediaStore.Images.Media.DATE_ADDED, nowTimestamp)
                 put(MediaStore.Images.Media.DATE_MODIFIED, nowTimestamp)
-                put(MediaStore.Images.Media.AUTHOR, "Your Name")
-                put(MediaStore.Images.Media.DESCRIPTION, "Your description")
+                put(MediaStore.Images.Media.AUTHOR, "")
+                put(MediaStore.Images.Media.DESCRIPTION, "")
             }
         }
 
