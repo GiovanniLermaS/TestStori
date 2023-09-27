@@ -96,7 +96,7 @@ private fun CameraContent(
                     it
                 )
                 navController.popBackStack(
-                    route = Screen.RegistrationScreen.route,
+                    route = Screen.PhotoScreen.route,
                     inclusive = false
                 )
             }

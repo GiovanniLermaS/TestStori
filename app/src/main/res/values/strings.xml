@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">TestStori</string>
+    <string name="log_in">Ingresar</string>
+    <string name="register">Registrarse</string>
+    <string name="email">Correo</string>
+    <string name="password">Contraseña</string>
+    <string name="toggle_password_visibility">Toggle password visibility</string>
+    <string name="next">Siguiente</string>
+    <string name="click_on_camera">Click en la cámara</string>
+    <string name="name">Nombre</string>
+    <string name="last_name">Apellido</string>
 </resources>

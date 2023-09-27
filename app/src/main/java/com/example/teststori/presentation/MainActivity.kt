@@ -16,7 +16,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.teststori.presentation.camera.CameraScreen
 import com.example.teststori.presentation.home.HomeScreen
 import com.example.teststori.presentation.login.LoginScreen
-import com.example.teststori.presentation.registration.RegistrationScreen
+import com.example.teststori.presentation.registration.personal_data.PersonalDataScreen
+import com.example.teststori.presentation.registration.photo.PhotoScreen
+import com.example.teststori.presentation.success.SuccessScreen
 import com.example.teststori.presentation.ui.theme.TestStoriTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -33,19 +35,22 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = Screen.RegistrationScreen.route
+                        startDestination = Screen.LoginScreen.route
                     ) {
                         composable(
-                            route = Screen.RegistrationScreen.route,
+                            route = Screen.PersonalDataScreen.route,
                         ) {
-                            RegistrationScreen(
-                                navController
-                            )
+                            PersonalDataScreen(navController)
+                        }
+                        composable(
+                            route = Screen.PhotoScreen.route,
+                        ) {
+                            PhotoScreen(navController)
                         }
                         composable(
                             route = Screen.LoginScreen.route
                         ) {
-                            LoginScreen()
+                            LoginScreen(navController)
                         }
                         composable(
                             route = Screen.HomeScreen.route
@@ -56,6 +61,11 @@ class MainActivity : ComponentActivity() {
                             route = Screen.CameraScreen.route
                         ) {
                             CameraScreen(navController)
+                        }
+                        composable(
+                            route = Screen.SuccessScreen.route
+                        ) {
+                            SuccessScreen(navController)
                         }
                     }
                 }

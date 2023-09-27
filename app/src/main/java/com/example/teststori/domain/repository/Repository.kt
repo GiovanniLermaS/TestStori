@@ -1,8 +1,22 @@
 package com.example.teststori.domain.repository
 
-interface Repository {
+import android.net.Uri
+import com.google.firebase.auth.FirebaseUser
 
-    /*suspend fun getRegistration(page: Int): DataDto
-    suspend fun getLogin(id: Int): DetailDto
-    suspend fun getHome(id: Int): DetailDto*/
+interface Repository {
+    suspend fun getRegistration(
+        email: String, password: String
+    ): Boolean
+
+    suspend fun updateUserUri(
+        uri: Uri?
+    ): Boolean
+
+    suspend fun updateUser(
+        nameLastName: String
+    ): Boolean
+
+    suspend fun getLogin(email: String, password: String): String
+
+    suspend fun getUser(): FirebaseUser?
 }
