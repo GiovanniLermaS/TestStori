@@ -72,7 +72,7 @@ class MainActivity : ComponentActivity() {
                         composable(
                             route = Screen.DetailScreen.route + "/{${Constants.ID}}"
                         ) {
-                            DetailScreen(navController)
+                            DetailScreen()
                         }
                     }
                 }

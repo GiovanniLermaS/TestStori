@@ -1,5 +1,6 @@
 package com.example.teststori.presentation.home
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,20 +30,19 @@ fun HomeScreen(
     navController: NavController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
+    BackHandler(true) {}
     val context = LocalContext.current
     val value = viewModel.state.value
     val valueMovements = viewModel.stateMovements.value
     val lazyListState = rememberLazyListState()
     val (balance, onBalanceChange) = remember { mutableStateOf("") }
     val (movements, onMovementsChange) = remember { mutableStateOf(emptyList<Movement?>()) }
+    val (error, onErrorChange) = remember { mutableStateOf("") }
     value.balance?.let {
         onBalanceChange(convertIntToColombianMoney(it.balance))
-        viewModel.getMovements()
-        value.balance = null
     }
     valueMovements.movements?.let {
         onMovementsChange(it)
-        valueMovements.movements = null
     }
     value.isLoading?.let {
         if (it) Loader()
@@ -52,6 +52,14 @@ fun HomeScreen(
         if (it) Loader()
         valueMovements.isLoading = null
     }
+    value.error?.let {
+        onErrorChange(it)
+        value.error = null
+    }
+    valueMovements.error?.let {
+        onErrorChange(it)
+        valueMovements.error = null
+    }
     Box(
         modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
     ) {
@@ -59,15 +67,7 @@ fun HomeScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            value.error?.let {
-                Text(text = it)
-                value.error = null
-            }
-
-            valueMovements.error?.let {
-                Text(text = it)
-                valueMovements.error = null
-            }
+            Text(text = error)
             Text(text = context.getString(R.string.balance))
             Text(text = balance)
             LazyColumn(

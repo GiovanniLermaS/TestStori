@@ -12,4 +12,7 @@
     <string name="balance">Balance</string>
     <string name="costTransaction">Costo transaction</string>
     <string name="dateTransaction">Fecha transacción</string>
+    <string name="authorizationNumber">Número de autorización</string>
+    <string name="origin">Origen</string>
+    <string name="destination">Destino</string>
 </resources>

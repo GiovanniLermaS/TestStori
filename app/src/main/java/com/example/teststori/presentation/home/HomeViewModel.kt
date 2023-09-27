@@ -33,6 +33,7 @@ class HomeViewModel @Inject constructor(
                     if (result.data == null) {
                         _state.value = HomeState(error = "Balance es nulo")
                     } else {
+                        getMovements()
                         _state.value = HomeState(balance = result.data)
                     }
                 }
@@ -50,7 +51,7 @@ class HomeViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun getMovements() {
+    private fun getMovements() {
         getHomeUseCase.getMovements().onEach { result ->
             when (result) {
                 is Resource.Success -> {

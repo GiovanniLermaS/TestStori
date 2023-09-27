@@ -2,9 +2,12 @@ package com.example.teststori.data.repository
 
 import android.net.Uri
 import com.example.teststori.common.BANK_INFO
+import com.example.teststori.common.DETAIL_MOVEMENT
+import com.example.teststori.common.ID_MOVEMENT
 import com.example.teststori.common.MOVEMENTS
 import com.example.teststori.common.USER_ID
 import com.example.teststori.domain.model.Balance
+import com.example.teststori.domain.model.Detail
 import com.example.teststori.domain.model.Movement
 import com.example.teststori.domain.repository.Repository
 import com.google.firebase.auth.FirebaseAuth
@@ -90,6 +93,20 @@ class RepositoryImpl @Inject constructor(
                     movements.add(movement)
                 }
                 continuation.resume(movements as List<Movement?>?)
+            }.addOnFailureListener {
+                continuation.resume(null)
+            }
+    }
+
+    override suspend fun getDetail(id: String): List<Detail?>? = suspendCoroutine { continuation ->
+        db.collection(DETAIL_MOVEMENT).whereEqualTo(ID_MOVEMENT, id).get()
+            .addOnSuccessListener {
+                val movements = ArrayList<Detail?>()
+                it.forEach { query ->
+                    val movement = query.toObject(Detail::class.java)
+                    movements.add(movement)
+                }
+                continuation.resume(movements as List<Detail?>?)
             }.addOnFailureListener {
                 continuation.resume(null)
             }
