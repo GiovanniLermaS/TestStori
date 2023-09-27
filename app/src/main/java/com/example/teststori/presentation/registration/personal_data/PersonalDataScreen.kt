@@ -17,7 +17,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,7 +35,6 @@ import androidx.navigation.NavController
 import com.example.teststori.R
 import com.example.teststori.common.composables.Loader
 import com.example.teststori.presentation.Screen
-import kotlinx.coroutines.Dispatchers
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,11 +48,8 @@ fun PersonalDataScreen(
     val (lastName, onLastNameChange) = remember { mutableStateOf("") }
     val (email, onEmailChange) = remember { mutableStateOf("") }
     val (password, onPasswordChange) = remember { mutableStateOf("") }
-    val (isNotSuccess, onNotSuccessChange) = remember { mutableStateOf(false) }
-    val (isSuccess, onSuccessChange) = remember { mutableStateOf(false) }
-    val (error, onErrorChange) = remember { mutableStateOf("") }
-    val (isLoading, onLoadingChange) = remember { mutableStateOf(false) }
-
+    val value = viewModel.state.value
+    val valueUpdate = viewModel.updateUserState.value
     val visibilityIcon: ImageVector = if (isPasswordVisible) {
         Icons.Default.VisibilityOff
     } else {
@@ -62,24 +57,9 @@ fun PersonalDataScreen(
     }
     val next = {
         if (name != "" && lastName != "" && email != "" && password != "") viewModel.registerUser(
-            email,
-            password
+            email, password
         )
     }
-    RegisterUser(
-        viewModel = viewModel,
-        onLoadingChange = onLoadingChange,
-        onNotSuccessChange = onNotSuccessChange,
-        onSuccessChange = onSuccessChange,
-        onErrorChange = onErrorChange,
-    )
-    UpdateUser(
-        viewModel = viewModel,
-        navController = navController,
-        onLoadingChange = onLoadingChange,
-        onNotSuccessChange = onNotSuccessChange,
-        onErrorChange = onErrorChange
-    )
 
     Box(
         modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
@@ -88,10 +68,30 @@ fun PersonalDataScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            if (isSuccess) viewModel.updateName("$name $lastName")
-            if (isNotSuccess) Text(text = "Usuario ya registrado")
-            if (error.isNotBlank()) Text(text = error)
-            if (isLoading) Loader()
+            value.isSuccess?.let {
+                viewModel.updateName("$name $lastName")
+                value.isSuccess = null
+            }
+            value.error?.let {
+                Text(text = it)
+                value.error = null
+            }
+            value.isLoading?.let {
+                if (it) Loader()
+                value.isLoading = null
+            }
+            valueUpdate.isSuccess?.let { success ->
+                if (success) navController.navigate(Screen.PhotoScreen.route)
+                valueUpdate.isSuccess = null
+            }
+            valueUpdate.error?.let {
+                Text(text = it)
+                valueUpdate.error = null
+            }
+            valueUpdate.isLoading?.let {
+                if (it) Loader()
+                valueUpdate.isLoading = null
+            }
             TextField(
                 value = name,
                 onValueChange = onNameChange,
@@ -131,64 +131,6 @@ fun PersonalDataScreen(
             }
             Button(onClick = next) {
                 Text(context.getString(R.string.next))
-            }
-        }
-    }
-}
-
-@Composable
-private fun RegisterUser(
-    viewModel: PersonalDataViewModel,
-    onLoadingChange: (Boolean) -> Unit,
-    onNotSuccessChange: (Boolean) -> Unit,
-    onSuccessChange: (Boolean) -> Unit,
-    onErrorChange: (String) -> Unit
-) {
-    LaunchedEffect(Dispatchers.IO) {
-        viewModel.state.collect {
-            onLoadingChange(false)
-            it.isSuccess?.let { success ->
-                if (success) {
-                    onSuccessChange(true)
-                } else {
-                    onNotSuccessChange(true)
-                }
-            }
-            if (it.error.isNotBlank()) {
-                onLoadingChange(false)
-                onErrorChange(it.error)
-            }
-            it.isLoading?.let { loading ->
-                if (loading) onLoadingChange(true)
-            }
-        }
-    }
-}
-
-@Composable
-private fun UpdateUser(
-    viewModel: PersonalDataViewModel,
-    navController: NavController,
-    onLoadingChange: (Boolean) -> Unit,
-    onNotSuccessChange: (Boolean) -> Unit,
-    onErrorChange: (String) -> Unit
-) {
-    LaunchedEffect(Dispatchers.IO) {
-        viewModel.updateUserState.collect {
-            onLoadingChange(false)
-            it.isSuccess?.let { success ->
-                if (success) {
-                    navController.navigate(Screen.PhotoScreen.route)
-                } else {
-                    onNotSuccessChange(true)
-                }
-            }
-            if (it.error.isNotBlank()) {
-                onLoadingChange(false)
-                onErrorChange(it.error)
-            }
-            it.isLoading?.let { loading ->
-                if (loading) onLoadingChange(true)
             }
         }
     }

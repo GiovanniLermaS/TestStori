@@ -1,25 +1,23 @@
-package com.example.teststori.domain.use_case.get_photo
+package com.example.teststori.domain.use_case.get_home
 
-import android.net.Uri
 import coil.network.HttpException
 import com.example.teststori.common.Resource
+import com.example.teststori.data.model.Balance
 import com.example.teststori.domain.repository.Repository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.IOException
 import javax.inject.Inject
 
-class GetPhotoUseCase @Inject constructor(
+class GetHomeUseCase @Inject constructor(
     private val repository: Repository
 ) {
 
-    operator fun invoke(
-        uri: Uri?
-    ): Flow<Resource<String?>> = flow {
+    operator fun invoke(): Flow<Resource<Balance?>> = flow {
         try {
             emit(Resource.Loading())
-            val isSuccess = repository.updateUserUri(uri)
-            emit(Resource.Success(isSuccess))
+            val balance = repository.getBalance()
+            emit(Resource.Success(balance))
         } catch (e: HttpException) {
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occured"))
         } catch (e: IOException) {

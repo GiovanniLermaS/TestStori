@@ -1,16 +1,19 @@
 package com.example.teststori.data.repository
 
 import android.net.Uri
+import com.example.teststori.common.BANK_INFO
+import com.example.teststori.data.model.Balance
 import com.example.teststori.domain.repository.Repository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.FirebaseFirestore
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class RepositoryImpl @Inject constructor(
-    private val firebaseAuth: FirebaseAuth
+    private val firebaseAuth: FirebaseAuth, private val db: FirebaseFirestore
 ) : Repository {
 
     override suspend fun getRegistration(
@@ -39,7 +42,7 @@ class RepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun updateUserUri(uri: Uri?): Boolean =
+    override suspend fun updateUserUri(uri: Uri?): String? =
         suspendCoroutine { continuation ->
             firebaseAuth.currentUser?.let { user ->
                 val profileUpdates =
@@ -47,9 +50,9 @@ class RepositoryImpl @Inject constructor(
                         .setPhotoUri(uri)
                         .build()
                 user.updateProfile(profileUpdates).addOnSuccessListener {
-                    continuation.resume(true)
+                    continuation.resume("")
                 }.addOnFailureListener {
-                    continuation.resume(false)
+                    continuation.resume(it.message)
                 }
             }
         }
@@ -63,6 +66,14 @@ class RepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun getUser(): FirebaseUser? =
-        firebaseAuth.currentUser
+    override suspend fun getUser(): FirebaseUser? = firebaseAuth.currentUser
+
+    override suspend fun getBalance(): Balance? = suspendCoroutine { continuation ->
+        db.collection(BANK_INFO).document(firebaseAuth.currentUser?.uid ?: "").get()
+            .addOnSuccessListener {
+                continuation.resume(it.toObject(Balance::class.java) as Balance)
+            }.addOnFailureListener {
+                continuation.resume(null)
+            }
+    }
 }

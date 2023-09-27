@@ -17,9 +17,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -37,7 +34,6 @@ import com.example.teststori.presentation.registration.composables.bitmapImageTo
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import kotlinx.coroutines.Dispatchers
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
@@ -52,9 +48,6 @@ fun PhotoScreen(
         hasPermission = permissionCamera.status.isGranted,
         onRequestPermission = permissionCamera::launchPermissionRequest,
     )
-    val (isNotSuccess, onNotSuccessChange) = remember { mutableStateOf(false) }
-    val (error, onErrorChange) = remember { mutableStateOf("") }
-    val (isLoading, onLoadingChange) = remember { mutableStateOf(false) }
     val bitmap =
         navController.currentBackStackEntry?.savedStateHandle?.get<Bitmap>(Constants.BITMAP)
     val uri = if (bitmap != null) {
@@ -64,13 +57,8 @@ fun PhotoScreen(
         if (uri != null)
             viewModel.updateUserUri(uri)
     }
-    UpdateUriUser(
-        viewModel = viewModel,
-        navController = navController,
-        onLoadingChange = onLoadingChange,
-        onNotSuccessChange = onNotSuccessChange,
-        onErrorChange = onErrorChange
-    )
+    val value = viewModel.photoState.value
+
     Box(
         modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
     ) {
@@ -78,9 +66,18 @@ fun PhotoScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            if (isNotSuccess) Text(text = "Error actualizando uri")
-            if (error.isNotBlank()) Text(text = error)
-            if (isLoading) Loader()
+            value.isSuccess?.let {
+                navController.navigate(Screen.SuccessScreen.route)
+                value.isSuccess = null
+            }
+            value.error?.let {
+                Text(text = it)
+                value.error = null
+            }
+            value.isLoading?.let { loading ->
+                if (loading) Loader()
+                value.isLoading = null
+            }
             Card(modifier = Modifier.size(300.dp), shape = MaterialTheme.shapes.large,
                 onClick = {
                     if (isPermissionCamera) navController.navigate(route = Screen.CameraScreen.route)
@@ -117,34 +114,5 @@ private fun checkPermissions(
     } else {
         NoPermissionScreen(onRequestPermission)
         false
-    }
-}
-
-@Composable
-private fun UpdateUriUser(
-    viewModel: PhotoViewModel,
-    navController: NavController,
-    onLoadingChange: (Boolean) -> Unit,
-    onNotSuccessChange: (Boolean) -> Unit,
-    onErrorChange: (String) -> Unit
-) {
-    LaunchedEffect(Dispatchers.IO) {
-        viewModel.photoState.collect {
-            onLoadingChange(false)
-            it.isSuccess?.let { success ->
-                if (success) {
-                    navController.navigate(Screen.SuccessScreen.route)
-                } else {
-                    onNotSuccessChange(true)
-                }
-            }
-            if (it.error.isNotBlank()) {
-                onLoadingChange(false)
-                onErrorChange(it.error)
-            }
-            it.isLoading?.let { loading ->
-                if (loading) onLoadingChange(true)
-            }
-        }
     }
 }

@@ -1,13 +1,12 @@
 package com.example.teststori.presentation.registration.personal_data
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.teststori.common.Resource
 import com.example.teststori.domain.use_case.get_personal_data.GetPersonalDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -17,11 +16,11 @@ class PersonalDataViewModel @Inject constructor(
     private val getPersonalDataUseCase: GetPersonalDataUseCase
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(PersonalDataState())
-    val state: StateFlow<PersonalDataState> = _state.asStateFlow()
+    private val _state = mutableStateOf(PersonalDataState())
+    val state: State<PersonalDataState> = _state
 
-    private val _updateUserState = MutableStateFlow(UpdateUserState())
-    val updateUserState: StateFlow<UpdateUserState> = _updateUserState.asStateFlow()
+    private val _updateUserState = mutableStateOf(UpdateUserState())
+    val updateUserState: State<UpdateUserState> = _updateUserState
 
     fun registerUser(
         email: String,

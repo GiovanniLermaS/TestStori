@@ -17,7 +17,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,8 +35,8 @@ import androidx.navigation.NavController
 import com.example.teststori.R
 import com.example.teststori.common.composables.Loader
 import com.example.teststori.presentation.Screen
-import kotlinx.coroutines.Dispatchers
 
+var n = 0
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
@@ -49,10 +48,6 @@ fun LoginScreen(
     var isPasswordVisible by remember { mutableStateOf(false) }
     val (email, onEmailChange) = remember { mutableStateOf("") }
     val (password, onPasswordChange) = remember { mutableStateOf("") }
-    val (isNotSuccess, onNotSuccessChange) = remember { mutableStateOf(false) }
-    val (isSuccess, onSuccessChange) = remember { mutableStateOf(false) }
-    val (error, onErrorChange) = remember { mutableStateOf("") }
-    val (isLoading, onLoadingChange) = remember { mutableStateOf(false) }
     val visibilityIcon: ImageVector = if (isPasswordVisible) {
         Icons.Default.VisibilityOff
     } else {
@@ -65,13 +60,7 @@ fun LoginScreen(
     val register = {
         navController.navigate(Screen.PersonalDataScreen.route)
     }
-    LoginUser(
-        viewModel = viewModel,
-        onLoadingChange = onLoadingChange,
-        onNotSuccessChange = onNotSuccessChange,
-        onSuccessChange = onSuccessChange,
-        onErrorChange = onErrorChange
-    )
+    val state = viewModel.state.value
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -80,10 +69,18 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            if (isSuccess) navController.navigate(Screen.SuccessScreen.route)
-            if (isNotSuccess) Text(text = "Usuario no registrado")
-            if (error.isNotBlank()) Text(text = error)
-            if (isLoading) Loader()
+            state.isSuccess?.let {
+                if (it.isBlank()) navController.navigate(Screen.HomeScreen.route)
+                state.isSuccess = null
+            }
+            state.error?.let {
+                Text(text = it)
+                state.error = null
+            }
+            state.isLoading?.let {
+                if (it) Loader()
+                state.isLoading = null
+            }
             TextField(
                 value = email,
                 onValueChange = onEmailChange,
@@ -117,35 +114,6 @@ fun LoginScreen(
             }
             Button(onClick = register) {
                 Text(context.getString(R.string.register))
-            }
-        }
-    }
-}
-
-@Composable
-private fun LoginUser(
-    viewModel: LoginViewModel,
-    onLoadingChange: (Boolean) -> Unit,
-    onNotSuccessChange: (Boolean) -> Unit,
-    onSuccessChange: (Boolean) -> Unit,
-    onErrorChange: (String) -> Unit
-) {
-    LaunchedEffect(Dispatchers.IO) {
-        viewModel.state.collect {
-            onLoadingChange(false)
-            it.isSuccess?.let { success ->
-                if (success.isBlank()) {
-                    onSuccessChange(true)
-                } else {
-                    onNotSuccessChange(true)
-                }
-            }
-            if (it.error.isNotBlank()) {
-                onLoadingChange(false)
-                onErrorChange(it.error)
-            }
-            it.isLoading?.let { loading ->
-                if (loading) onLoadingChange(true)
             }
         }
     }

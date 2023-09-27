@@ -5,6 +5,7 @@ import com.example.teststori.data.repository.RepositoryImpl
 import com.example.teststori.domain.repository.Repository
 import com.example.teststori.domain.use_case.save_photo.SavePhotoToGalleryUseCase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,6 +25,6 @@ object AppModule {
     @Provides
     @Singleton
     fun provideRepository(): Repository {
-        return RepositoryImpl(FirebaseAuth.getInstance())
+        return RepositoryImpl(FirebaseAuth.getInstance(), FirebaseFirestore.getInstance())
     }
 }

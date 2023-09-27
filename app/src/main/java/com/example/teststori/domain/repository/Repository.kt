@@ -1,6 +1,7 @@
 package com.example.teststori.domain.repository
 
 import android.net.Uri
+import com.example.teststori.data.model.Balance
 import com.google.firebase.auth.FirebaseUser
 
 interface Repository {
@@ -10,7 +11,7 @@ interface Repository {
 
     suspend fun updateUserUri(
         uri: Uri?
-    ): Boolean
+    ): String?
 
     suspend fun updateUser(
         nameLastName: String
@@ -19,4 +20,5 @@ interface Repository {
     suspend fun getLogin(email: String, password: String): String
 
     suspend fun getUser(): FirebaseUser?
+    suspend fun getBalance(): Balance?
 }
