@@ -2,7 +2,10 @@ package com.example.teststori.data.repository
 
 import android.net.Uri
 import com.example.teststori.common.BANK_INFO
-import com.example.teststori.data.model.Balance
+import com.example.teststori.common.MOVEMENTS
+import com.example.teststori.common.USER_ID
+import com.example.teststori.domain.model.Balance
+import com.example.teststori.domain.model.Movement
 import com.example.teststori.domain.repository.Repository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -72,6 +75,21 @@ class RepositoryImpl @Inject constructor(
         db.collection(BANK_INFO).document(firebaseAuth.currentUser?.uid ?: "").get()
             .addOnSuccessListener {
                 continuation.resume(it.toObject(Balance::class.java) as Balance)
+            }.addOnFailureListener {
+                continuation.resume(null)
+            }
+    }
+
+    override suspend fun getMovements(): List<Movement?>? = suspendCoroutine { continuation ->
+        db.collection(MOVEMENTS).whereEqualTo(USER_ID, firebaseAuth.currentUser?.uid).get()
+            .addOnSuccessListener {
+                val movements = ArrayList<Movement?>()
+                it.forEach { query ->
+                    val movement = query.toObject(Movement::class.java)
+                    movement.id = query.id
+                    movements.add(movement)
+                }
+                continuation.resume(movements as List<Movement?>?)
             }.addOnFailureListener {
                 continuation.resume(null)
             }

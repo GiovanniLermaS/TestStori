@@ -19,6 +19,9 @@ class HomeViewModel @Inject constructor(
     private val _state = mutableStateOf(HomeState())
     val state: State<HomeState> = _state
 
+    private val _stateMovements = mutableStateOf(MovementsState())
+    val stateMovements: State<MovementsState> = _stateMovements
+
     init {
         getBalance()
     }
@@ -42,6 +45,30 @@ class HomeViewModel @Inject constructor(
 
                 is Resource.Loading -> {
                     _state.value = HomeState(isLoading = true)
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    fun getMovements() {
+        getHomeUseCase.getMovements().onEach { result ->
+            when (result) {
+                is Resource.Success -> {
+                    if (result.data == null) {
+                        _stateMovements.value = MovementsState(error = "No movimientos")
+                    } else {
+                        _stateMovements.value = MovementsState(movements = result.data)
+                    }
+                }
+
+                is Resource.Error -> {
+                    _stateMovements.value = MovementsState(
+                        error = result.message ?: "An unexpected error occured"
+                    )
+                }
+
+                is Resource.Loading -> {
+                    _stateMovements.value = MovementsState(isLoading = true)
                 }
             }
         }.launchIn(viewModelScope)

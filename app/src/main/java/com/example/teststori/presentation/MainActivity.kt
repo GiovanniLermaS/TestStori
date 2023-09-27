@@ -13,7 +13,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.teststori.common.Constants
 import com.example.teststori.presentation.camera.CameraScreen
+import com.example.teststori.presentation.detail.DetailScreen
 import com.example.teststori.presentation.home.HomeScreen
 import com.example.teststori.presentation.login.LoginScreen
 import com.example.teststori.presentation.registration.personal_data.PersonalDataScreen
@@ -55,7 +57,7 @@ class MainActivity : ComponentActivity() {
                         composable(
                             route = Screen.HomeScreen.route
                         ) {
-                            HomeScreen()
+                            HomeScreen(navController)
                         }
                         composable(
                             route = Screen.CameraScreen.route
@@ -66,6 +68,11 @@ class MainActivity : ComponentActivity() {
                             route = Screen.SuccessScreen.route
                         ) {
                             SuccessScreen(navController)
+                        }
+                        composable(
+                            route = Screen.DetailScreen.route + "/{${Constants.ID}}"
+                        ) {
+                            DetailScreen(navController)
                         }
                     }
                 }

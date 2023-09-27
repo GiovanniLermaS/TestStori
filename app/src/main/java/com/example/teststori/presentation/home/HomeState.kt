@@ -1,6 +1,6 @@
 package com.example.teststori.presentation.home
 
-import com.example.teststori.data.model.Balance
+import com.example.teststori.domain.model.Balance
 
 data class HomeState(
     var isLoading: Boolean? = null,

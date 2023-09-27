@@ -10,4 +10,6 @@
     <string name="name">Nombre</string>
     <string name="last_name">Apellido</string>
     <string name="balance">Balance</string>
+    <string name="costTransaction">Costo transaction</string>
+    <string name="dateTransaction">Fecha transacción</string>
 </resources>
