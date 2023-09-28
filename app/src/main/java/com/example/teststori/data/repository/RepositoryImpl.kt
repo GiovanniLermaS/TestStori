@@ -77,7 +77,7 @@ class RepositoryImpl @Inject constructor(
     override suspend fun getBalance(): Balance? = suspendCoroutine { continuation ->
         db.collection(BANK_INFO).document(firebaseAuth.currentUser?.uid ?: "").get()
             .addOnSuccessListener {
-                continuation.resume(it.toObject(Balance::class.java) as Balance)
+                continuation.resume(it.toObject(Balance::class.java))
             }.addOnFailureListener {
                 continuation.resume(null)
             }
