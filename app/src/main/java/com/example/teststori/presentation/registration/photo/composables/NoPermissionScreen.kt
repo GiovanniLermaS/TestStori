@@ -1,4 +1,4 @@
-package com.example.teststori.presentation.registration.composables
+package com.example.teststori.presentation.registration.photo.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 fun NoPermissionScreen(
     onRequestPermission: () -> Unit
 ) {
-
     NoPermissionContent(
         onRequestPermission = onRequestPermission
     )

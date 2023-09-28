@@ -29,8 +29,8 @@ import com.example.teststori.R
 import com.example.teststori.common.Constants
 import com.example.teststori.common.composables.Loader
 import com.example.teststori.presentation.Screen
-import com.example.teststori.presentation.registration.composables.NoPermissionScreen
-import com.example.teststori.presentation.registration.composables.bitmapImageToUri
+import com.example.teststori.presentation.registration.photo.composables.NoPermissionScreen
+import com.example.teststori.presentation.registration.photo.composables.bitmapImageToUri
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState

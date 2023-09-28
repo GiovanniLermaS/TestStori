@@ -1,4 +1,4 @@
-package com.example.teststori.presentation.registration.composables
+package com.example.teststori.presentation.registration.photo.composables
 
 import android.content.ContentValues
 import android.graphics.Bitmap

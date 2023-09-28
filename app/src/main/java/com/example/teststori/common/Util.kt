@@ -19,3 +19,18 @@ fun formatDate(date: Date): String {
     val dateFormat = SimpleDateFormat("yyyy-MM-dd")
     return dateFormat.format(date)
 }
+
+fun String.isValidEmail(): Boolean {
+    val regex = Regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$")
+    return regex.matches(this)
+}
+
+fun String.capitalizeWords(): String {
+    return this.split(" ").joinToString(" ") { word ->
+        word.replaceFirstChar {
+            if (it.isLowerCase()) it.titlecase(
+                Locale.ROOT
+            ) else it.toString()
+        }
+    }
+}

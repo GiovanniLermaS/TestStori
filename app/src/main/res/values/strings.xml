@@ -15,4 +15,6 @@
     <string name="authorizationNumber">Número de autorización</string>
     <string name="origin">Origen</string>
     <string name="destination">Destino</string>
+    <string name="wrongEmail">Correo incorrecto</string>
+    <string name="emptyField">Campo vacío</string>
 </resources>
