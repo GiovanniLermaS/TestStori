@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.teststori.presentation.camera
 
 import android.content.Context
@@ -7,7 +9,6 @@ import android.graphics.Color
 import android.util.Log
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
-import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
@@ -50,7 +51,6 @@ fun CameraScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CameraContent(
     navController: NavController,
@@ -61,7 +61,6 @@ private fun CameraContent(
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
     val cameraController: LifecycleCameraController =
         remember { LifecycleCameraController(context) }
-    cameraController.cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
 
     Scaffold(modifier = Modifier.fillMaxSize(), floatingActionButton = {
         ExtendedFloatingActionButton(text = { Text(text = "Take photo") },
